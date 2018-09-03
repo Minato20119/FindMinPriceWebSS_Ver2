@@ -42,9 +42,6 @@ public class SearchPro {
     private static final int DEFAULT_PRICE_MIN = 500000;
 
     public StringBuilder searchProduct(String linkPathFile) {
-//    public static void main(String[] args) {
-
-//        String linkPathFile = "C:\\Users\\Minato\\Desktop\\D.txt";
         StringBuilder builder = new StringBuilder();
 
         FileInputStream fileInputStream = null;
@@ -84,7 +81,8 @@ public class SearchPro {
                     System.out.println(count++ + ": " + nameProduct);
                     builder.append(count - 1).append(": ").append(nameProduct).append("\n");
 
-                    String product = nameProduct.replaceAll("-", " ").toLowerCase();
+                    String product = nameProduct.replaceAll("[-–]", " ").toLowerCase();
+                    product = product.replaceAll("\\s\\s+", " ");
 
                     // Check tên sản phẩm chỉ với 2 mã code ở cuối
                     String codeOfProduct = "";
@@ -108,25 +106,17 @@ public class SearchPro {
 
                         URL url = new URL(urlText);
                         URLConnection connectURL = url.openConnection();
-//                        connectURL.setUseCaches(false);
                         System.out.println("Done connect...");
 
                         long timeStart = System.currentTimeMillis();
-//                        System.out.println("TimeStart: " + timeStart);
 
                         // Get inputStreamReader
                         try (BufferedReader inputURL = new BufferedReader(new InputStreamReader(
                                 connectURL.getInputStream(), StandardCharsets.UTF_8))) {
 
-//                            long timeA = System.currentTimeMillis();
-//                            System.out.println("A: " + (timeA - timeStart));
                             String tempText;
                             String textLineStream = "";
                             String containsTextOfPage = "";
-
-                            long timeBegin = System.currentTimeMillis();
-//                            System.out.println("TimeBegin: " + timeBegin);
-//                            System.out.println("Begin - Start: " + (timeBegin - timeStart));
 
                             while ((tempText = inputURL.readLine()) != null) {
                                 textLineStream += tempText;
@@ -137,13 +127,12 @@ public class SearchPro {
                                 }
 
                                 // Dừng lấy inputStream
-                                if (textLineStream.contains("Từ khóa tương tự")) {
+                                if (textLineStream.contains("Từ khóa tương tự") || textLineStream.contains("shorter-serach-suggestion__link")) {
                                     break;
                                 }
                             }
 
                             long timeEnd = System.currentTimeMillis();
-//                            System.out.println("End - Begin: " + (timeEnd - timeBegin));
                             System.out.println("Duration: " + (timeEnd - timeStart));
 
                             // Get text chứa giá
@@ -187,7 +176,6 @@ public class SearchPro {
                                     if (matcher2.group(1).compareTo("1") == 0) {
                                         continue;
                                     }
-//                                    System.out.println("Matcher2: " + matcher2.group(1));
                                     // Get price
                                     price = Integer.parseInt(matcher2.group(1).replace(".", ""));
 
